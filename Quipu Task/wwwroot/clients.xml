@@ -1,0 +1,26 @@
+<Clients>
+	<Client ID = '12345'>
+		<Name>Ime1</Name>
+		<Address>
+			<Address> Home addres</Address>
+			<Address> Vikend addres</Address>
+
+           …………….
+
+
+		</Address>
+		<BirthDate>01.09.2001</BirthDate>
+	</Client>
+	<Client ID = '54321'>
+		<Name>Ime2</Name>
+		<Address>
+			<Address> Home addres</Address>
+			<Address> Vikend addres</Address>
+
+           ………..
+
+
+		</Address>
+		<BirthDate>01.09.2003</BirthDate>
+	</Client>
+</Clients>

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Quipu Task.props" />
+</Project>
