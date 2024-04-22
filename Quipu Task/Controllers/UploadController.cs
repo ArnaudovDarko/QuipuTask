@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Quipu_Task.Helpers;
 using Quipu_Task.Models;
+using Quipu_Task.Service;
 using System.Text;
 using System.Web;
 using System.Xml;
@@ -13,13 +14,15 @@ namespace Quipu_Task.Controllers
 {
     public class UploadController : Controller
     {
-        private readonly DataContext _context;
+   
         private IWebHostEnvironment _environment;
+        private IClientService _ClientService;
 
-        public UploadController(DataContext context, IWebHostEnvironment environment)
+        public UploadController( IWebHostEnvironment environment, IClientService clientService)
         {
-            _context = context;
             _environment = environment;
+            _ClientService = clientService;
+
         }
         [HttpGet]
         public IActionResult UploadFile()
@@ -53,8 +56,7 @@ namespace Quipu_Task.Controllers
                     };
 
                     clients.Add(client);
-                    _context.Add(client);
-                    _context.SaveChanges();
+                    _ClientService.Create(client);
                 }
             }          
             return View(clients);
