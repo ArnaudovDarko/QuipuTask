@@ -8,6 +8,8 @@ namespace Quipu_Task.Service
     {
         ClientInfo GetClientInfo(int? Id);
         IEnumerable<ClientInfo> GetAllClients();
+        ClientInfo Create(ClientInfo user);
+        ClientInfo Update(ClientInfo user);
     }
 
     public class ClientService : IClientService
@@ -18,6 +20,15 @@ namespace Quipu_Task.Service
         {
             _context = context;
         }
+
+        public ClientInfo Create(ClientInfo user)
+        {
+            _context.Add(user);
+            _context.SaveChanges();
+
+            return user;
+        }
+
         public IEnumerable<ClientInfo> GetAllClients()
         {
             return from s in _context.clientInfo
@@ -26,6 +37,14 @@ namespace Quipu_Task.Service
         public  ClientInfo GetClientInfo(int? Id)
         {
             return _context.clientInfo.FirstOrDefault(m => m.ClientId == Id);
+        }
+
+        public ClientInfo Update(ClientInfo user)
+        {
+            _context.Update(user);
+            _context.SaveChanges();
+
+            return user;
         }
     }
 }

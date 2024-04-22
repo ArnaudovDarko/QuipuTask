@@ -119,8 +119,7 @@ namespace Quipu_Task.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(clientInfo);
-                await _context.SaveChangesAsync();
+                _ClientService.Create(clientInfo);
                 return RedirectToAction(nameof(Index));
             }
             return View(clientInfo);
@@ -133,7 +132,7 @@ namespace Quipu_Task.Controllers
                 return NotFound();
             }
 
-            var clientInfo = await _context.clientInfo.FindAsync(id);
+            var clientInfo = _ClientService.GetClientInfo(id);
             if (clientInfo == null)
             {
                 return NotFound();
@@ -152,35 +151,26 @@ namespace Quipu_Task.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!ClientInfoExists(clientInfo.ClientId))
                 {
-                    _context.Update(clientInfo);
-                    await _context.SaveChangesAsync();
+                    _ClientService.Update(clientInfo);
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ClientInfoExists(clientInfo.ClientId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                  
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(clientInfo);
         }
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var clientInfo = await _context.clientInfo
-                .FirstOrDefaultAsync(m => m.ClientId == id);
+            var clientInfo = _ClientService.GetClientInfo(id);
             if (clientInfo == null)
             {
                 return NotFound();
@@ -190,15 +180,15 @@ namespace Quipu_Task.Controllers
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var clientInfo = await _context.clientInfo.FindAsync(id);
+            var clientInfo =  _ClientService.GetClientInfo(id);
             if (clientInfo != null)
             {
                 _context.clientInfo.Remove(clientInfo);
             }
 
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
