@@ -1,12 +1,56 @@
 ﻿@{
     ViewBag.Title = "UploadFile";
 }
-<h2>UploadFile</h2>
 @using (Html.BeginForm("UploadFile", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div>
-        @Html.TextBox("file", "", new { type = "file" }) <br />
-        <input type="submit" value="Upload" />
-        @ViewBag.Message
+    <div style="margin-top: 20px; text-align: center;">
+        <label for="fileUpload" style="font-size: 1.2em; font-weight: bold;">Селектирај фајл:</label> <br />
+        <input type="file" id="fileUpload" name="file" style="margin-top: 10px;" /> <br />
+        <button type="submit" style="margin-top: 10px; padding: 8px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Upload
+        </button>
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <p style="color:red; margin-top: 10px; font-size: 1.1em;">@ViewBag.Message</p>
+        }
+
+        <div>
+            @if (Model != null)
+            {
+                <h3>Successfully Added Clients</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Home Address</th>
+                            <th>Home Address 2</th>
+                            <th>Date of Birth</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var client in Model)
+                        {
+                            <tr>
+                                <td>@client.FirstName</td>
+                                <td>@client.LastName</td>
+                                <td>@client.Email</td>
+                                <td>@client.HomeAddress</td>
+                                <td>@client.HomeAddress2</td>
+                                <td>@client.DateBirth.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No clients added.</p>
+            }
+        </div>
+        <div>
+            <a asp-controller="ClientInfoes" asp-action="Index">Врати се назад</a>
+        </div>
     </div>
 }

@@ -4,14 +4,41 @@
     ViewData["Title"] = "Клиенти";
 }
 
+<div class="modal fade" id="userCountModal" tabindex="-1" role="dialog" aria-labelledby="userCountModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="userCountMessage">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h1>Клиенти</h1>
 
-<p>
-    <a asp-action="Create">Креирај нов клиент</a>
-</p>
-<p>
-    <a class="btn btn-info" asp-action="UploadFile" asp-controller="Upload">Внеси клиент преку XML</a>
-</p>
+<div class="row">
+    <div class="col-md-3">
+        <p>
+            <a class="btn btn-info btn-block" asp-action="Create">Креирај нов клиент</a>
+        </p>
+    </div>
+    <div class="col-md-3">
+        <p>
+            
+            <button class="btn btn-info btn-block" id="showUserCountBtn">Прикажи број на корисници</button>
+        </p>
+    </div>
+    <div class="col-md-3">
+        <p>
+            <a class="btn btn-info btn-block" asp-action="UploadFile" asp-controller="Upload">Внеси клиент преку XML</a>
+        </p>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -25,10 +52,10 @@
                Емаил
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HomeAddress)
+                Адреса
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HomeAddress2)
+                Адреса 2
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["DateBirthSortParam"]">Дата на раѓање</a>
@@ -71,3 +98,24 @@
 }
     </tbody>
 </table>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#showUserCountBtn').click(function () {
+                $.ajax({
+                    url: '/api/getclientcount',
+                    type: 'GET',
+                    success: function (data) {
+                        $('#userCountMessage').text('Вкупно клиент во базата: ' + data.count);
+                        $('#userCountModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching user count.');
+                    }
+                });
+            });
+        });
+    </script>
+}

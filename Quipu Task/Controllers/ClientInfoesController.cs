@@ -51,56 +51,8 @@ namespace Quipu_Task.Controllers
                     clients = clients.OrderBy(c => c.FirstName);
                     break;
             }
-
-            
-
             return View(clients);
-
-
         }
-
-        //public async Task<IActionResult> Upload()
-        //{
-        //    ClientInfo clients = new ClientInfo();
-
-        //    XmlDocument doc = new XmlDocument();
-        //    doc.Load(string.Concat(this._environment.WebRootPath, "/clients.xml"));
-
-        //    XmlNodeList clientNodes = doc.SelectNodes("/Clients/Client");
-        //    if (clientNodes != null)
-        //    {
-        //        foreach (XmlNode clientNode in clientNodes)
-        //        {
-        //            XmlClientsImport client = new XmlClientsImport();
-        //            client.ID = int.Parse(clientNode.Attributes["ID"].Value);
-        //            client.Name = clientNode.SelectSingleNode("Name").InnerText;
-
-        //            XmlNodeList addressNodes = clientNode.SelectNodes("Address");
-        //            if (addressNodes != null)
-        //            {
-        //                client.Addresses = new List<string>();
-        //                foreach (XmlNode addressNode in addressNodes)
-        //                {
-        //                    client.Addresses.Add(addressNode.InnerText);
-        //                }
-        //            }
-
-        //            client.BirthDate = DateOnly.Parse(clientNode.SelectSingleNode("BirthDate").InnerText);
-
-        //            //clients.ClientId = client.ID;
-        //            clients.FirstName = client.Name;
-        //            clients.HomeAddress = client.Addresses[0];
-        //            clients.DateBirth = client.BirthDate;
-
-
-        //            _context.Add(clients);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //    }
-
-        //    return View(await _context.clientInfo.ToListAsync());
-        //}
-       
         public IActionResult ExportCSV()
         {
 
@@ -127,11 +79,7 @@ namespace Quipu_Task.Controllers
                 default:
                     clients = clients.OrderBy(c => c.FirstName);
                     break;
-            }
-
-            
-
-          
+            }  
             string jsonString = JsonSerializer.Serialize(clients);
             var fileName = "Clients.txt";
             var mimeType = "text/plain";
@@ -141,7 +89,6 @@ namespace Quipu_Task.Controllers
                 FileDownloadName = fileName
             };
         }
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -158,7 +105,6 @@ namespace Quipu_Task.Controllers
 
             return View(clientInfo);
         }
-
 
         public IActionResult Create()
         {
@@ -193,7 +139,6 @@ namespace Quipu_Task.Controllers
             return View(clientInfo);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ClientId,FirstName,LastName,Email,HomeAddress,HomeAddress2,DateBirth")] ClientInfo clientInfo)
@@ -225,8 +170,6 @@ namespace Quipu_Task.Controllers
             }
             return View(clientInfo);
         }
-
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -243,8 +186,6 @@ namespace Quipu_Task.Controllers
 
             return View(clientInfo);
         }
-
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -259,6 +200,20 @@ namespace Quipu_Task.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        [Route("api/getclientcount")]
+        public async Task<IActionResult> GetUsersCount()
+        {
+            try
+            {
+                var userCount = await _context.clientInfo.CountAsync();
+                return Ok(new { Count = userCount });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         private bool ClientInfoExists(int id)
         {
             return _context.clientInfo.Any(e => e.ClientId == id);

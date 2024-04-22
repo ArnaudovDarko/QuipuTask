@@ -5,6 +5,7 @@ using Quipu_Task.Models;
 using System.Text;
 using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 
 
 
@@ -15,13 +16,13 @@ namespace Quipu_Task.Controllers
         private readonly DataContext _context;
         private IWebHostEnvironment _environment;
 
-        public UploadController (DataContext context, IWebHostEnvironment environment)
+        public UploadController(DataContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
         }
         [HttpGet]
-        public IActionResult UploadFile() 
+        public IActionResult UploadFile()
         {
             return View();
         }
@@ -30,19 +31,33 @@ namespace Quipu_Task.Controllers
         [HttpPost]
         public ActionResult UploadFile(IFormFile file)
         {
-
-            var result = new StringBuilder();
-            using (var reader = new StreamReader(file.OpenReadStream()))
+            if (file == null || file.Length <= 0)
             {
-                while (reader.Peek() >= 0)
-                    result.AppendLine(reader.ReadLine());
+                ViewBag.Message = "Внесете фајл";
+                return View();
             }
+            var clients = new List<ClientInfo>();
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {            
+                XDocument xmlDoc = XDocument.Load(reader);
+                foreach (XElement clientElement in xmlDoc.Descendants("Client"))
+                {
+                    var client = new ClientInfo
+                    {
+                        FirstName = clientElement.Element("Name")?.Value,
+                        LastName = "", 
+                        Email = "", 
+                        HomeAddress = clientElement.Element("Address")?.Element("HomeAddress")?.Value,
+                        HomeAddress2 = clientElement.Element("Address")?.Element("HomeAddress2")?.Value,
+                        DateBirth = DateOnly.Parse(clientElement.Element("BirthDate")?.Value)
+                    };
 
-
-
-           
-          
-            return View();
+                    clients.Add(client);
+                    _context.Add(client);
+                    _context.SaveChanges();
+                }
+            }          
+            return View(clients);
         }
     }
 }

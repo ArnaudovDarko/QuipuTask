@@ -14,8 +14,10 @@ namespace Quipu_Task.Models
         [XmlElement("Name")]
         public string Name { get; set; }
 
-        [XmlElement("Address")]
-        public List<string> Addresses { get; set; }
+        [XmlElement("HomeAddress")]
+        public List<string> HomeAddress { get; set; }
+        [XmlElement("HomeAddress2")]
+        public List<string> HomeAddress2 { get; set; }
 
         [XmlElement("BirthDate")]
         public DateOnly BirthDate { get; set; }
