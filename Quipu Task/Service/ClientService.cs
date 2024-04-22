@@ -7,7 +7,6 @@ namespace Quipu_Task.Service
     public interface IClientService 
     {
         ClientInfo GetClientInfo(int? Id);
-
         IEnumerable<ClientInfo> GetAllClients();
     }
 
@@ -19,15 +18,11 @@ namespace Quipu_Task.Service
         {
             _context = context;
         }
-
-
-
         public IEnumerable<ClientInfo> GetAllClients()
         {
             return from s in _context.clientInfo
                    select s;
         }
-
         public  ClientInfo GetClientInfo(int? Id)
         {
             return _context.clientInfo.FirstOrDefault(m => m.ClientId == Id);
