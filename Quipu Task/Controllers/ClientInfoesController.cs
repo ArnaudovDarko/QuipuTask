@@ -151,13 +151,9 @@ namespace Quipu_Task.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!ClientInfoExists(clientInfo.ClientId))
+                if (_ClientService.ClientInfoExists(id))
                 {
                     _ClientService.Update(clientInfo);
-                }
-                else
-                {
-                  
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -185,10 +181,8 @@ namespace Quipu_Task.Controllers
             var clientInfo =  _ClientService.GetClientInfo(id);
             if (clientInfo != null)
             {
-                _context.clientInfo.Remove(clientInfo);
-            }
-
-             _context.SaveChanges();
+                _ClientService.Delete(clientInfo);
+            }            
             return RedirectToAction(nameof(Index));
         }
 
@@ -198,7 +192,7 @@ namespace Quipu_Task.Controllers
         {
             try
             {
-                var userCount = await _context.clientInfo.CountAsync();
+                var userCount = _ClientService.GetAllClients().Count();
                 return Ok(new { Count = userCount });
             }
             catch (Exception ex)
@@ -206,9 +200,6 @@ namespace Quipu_Task.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        private bool ClientInfoExists(int id)
-        {
-            return _context.clientInfo.Any(e => e.ClientId == id);
-        }
+      
     }
 }

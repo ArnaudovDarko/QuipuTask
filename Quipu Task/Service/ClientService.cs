@@ -10,6 +10,9 @@ namespace Quipu_Task.Service
         IEnumerable<ClientInfo> GetAllClients();
         ClientInfo Create(ClientInfo user);
         ClientInfo Update(ClientInfo user);
+        void Delete(ClientInfo user);
+        bool ClientInfoExists(int id);
+       
     }
 
     public class ClientService : IClientService
@@ -21,12 +24,25 @@ namespace Quipu_Task.Service
             _context = context;
         }
 
+        public bool ClientInfoExists(int id)
+        {
+            return _context.clientInfo.Any(e => e.ClientId == id);
+        }
+
         public ClientInfo Create(ClientInfo user)
         {
             _context.Add(user);
             _context.SaveChanges();
 
             return user;
+        }
+
+
+
+        public void Delete(ClientInfo user)
+        {
+            _context.clientInfo.Remove(user);
+            _context.SaveChanges();
         }
 
         public IEnumerable<ClientInfo> GetAllClients()
