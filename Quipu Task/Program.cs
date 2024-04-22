@@ -1,5 +1,6 @@
 using Quipu_Task.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Quipu_Task.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(
         options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ClientInfo;Trusted_Connection=True;MultipleActiveResultSets=true"));
-
+builder.Services.AddScoped<IClientService, ClientService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

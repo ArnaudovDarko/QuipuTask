@@ -9,9 +9,11 @@ using System.Xml;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NuGet.Protocol;
 using Quipu_Task.Helpers;
 using Quipu_Task.Models;
+using Quipu_Task.Service;
 
 namespace Quipu_Task.Controllers
 {
@@ -19,11 +21,13 @@ namespace Quipu_Task.Controllers
     {
         private readonly DataContext _context;
         private IWebHostEnvironment _environment;
+        private IClientService _ClientService;
 
-        public ClientInfoesController(DataContext context, IWebHostEnvironment environment)
+        public ClientInfoesController(DataContext context, IWebHostEnvironment environment, IClientService clientService)
         {
             _context = context;
             _environment = environment;
+            _ClientService = clientService; 
         }
 
         public async Task<IActionResult> Index(string sortOrder)
@@ -31,8 +35,7 @@ namespace Quipu_Task.Controllers
 
             ViewData["FirstNameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "firstname_desc" : "";
             ViewData["DateBirthSortParam"] = sortOrder == "DateBirth" ? "datebirth_desc" : "DateBirth";
-            var clients = from s in _context.clientInfo
-                           select s;
+            var clients = _ClientService.GetAllClients();
             switch (sortOrder)
             {
                 case "firstname_desc":
@@ -62,8 +65,7 @@ namespace Quipu_Task.Controllers
                 TempData["Value"] = "";
             }
 
-            var clients = from s in _context.clientInfo
-                          select s;
+            var clients = _ClientService.GetAllClients();
 
             switch (sortOrder)
             {
@@ -96,8 +98,8 @@ namespace Quipu_Task.Controllers
                 return NotFound();
             }
 
-            var clientInfo = await _context.clientInfo
-                .FirstOrDefaultAsync(m => m.ClientId == id);
+            var clientInfo = _ClientService.GetClientInfo(id);
+
             if (clientInfo == null)
             {
                 return NotFound();
