@@ -4,7 +4,7 @@ using Quipu_Task.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(
@@ -12,7 +12,7 @@ builder.Services.AddDbContext<DataContext>(
 builder.Services.AddScoped<IClientService, ClientService>();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

@@ -19,13 +19,12 @@ namespace Quipu_Task.Controllers
 {
     public class ClientInfoesController : Controller
     {
-        private readonly DataContext _context;
+
         private IWebHostEnvironment _environment;
         private IClientService _ClientService;
 
-        public ClientInfoesController(DataContext context, IWebHostEnvironment environment, IClientService clientService)
+        public ClientInfoesController( IWebHostEnvironment environment, IClientService clientService)
         {
-            _context = context;
             _environment = environment;
             _ClientService = clientService; 
         }
